@@ -16,6 +16,13 @@ FetchContent_Declare(freeglut
 
 FetchContent_MakeAvailable(freeglut)
 
+FetchContent_Declare(glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG master
+)
+
+FetchContent_MakeAvailable(glm)
+
 
 FetchContent_Declare(GLEW
     GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
@@ -59,6 +66,7 @@ target_include_directories(main PUBLIC ${MY_INCLUDES})
 
 target_link_libraries(main PRIVATE freeglut)
 target_link_libraries(main PRIVATE libglew_static)
+target_link_libraries(main PRIVATE glm)
 
 message(---CMAKE_BUILD_TYPE)
 
