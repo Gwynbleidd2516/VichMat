@@ -4,11 +4,9 @@ set(APP_NAME VichMat)
 
 project(main)
 
+set(CMAKE_CXX_STANDARD 20)
+
 include(FetchContent)
-
-# set(ONLY_LIBS ON) # Only build libraries, not examples/utilities
-
-# target_compile_definitions(main PRIVATE DFREEGLUT_STATIC)
 
 FetchContent_Declare(freeglut
     GIT_REPOSITORY https://github.com/freeglut/freeglut.git
