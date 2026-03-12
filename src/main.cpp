@@ -21,6 +21,11 @@ void setScene(IScene &scene)
                      {
         IScene* scenePtr = static_cast<IScene*>(glutGetWindowData());
         if (scenePtr) scenePtr->keyboard(key, x, y); });
+
+    glutTimerFunc(16, [](int val)
+                    {
+        IScene* scenePtr = static_cast<IScene*>(glutGetWindowData());
+        if (scenePtr) scenePtr->timer(val); }, 0);
 }
 
 int main(int argc, char **argv)
