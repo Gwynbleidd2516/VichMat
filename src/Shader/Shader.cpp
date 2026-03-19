@@ -41,7 +41,7 @@ GLint Shader::__getLocation(std::string name) const
 {
     glUseProgram(mShaderProgram);
     GLint loc = glGetUniformLocation(mShaderProgram, name.c_str());
-    if (loc)
+    if (loc == -1)
     {
         std::string ans = "Cannot find Uniform: ";
         ans += name;
@@ -193,6 +193,21 @@ void Shader::setUniform3f(std::string name, glm::vec3 value) const
 void Shader::setUniform4f(std::string name, glm::vec4 value) const
 {
     glUniform4f(__getLocation(name), value.x, value.y, value.z, value.w);
+}
+
+void Shader::setUniformMatrix2fv(std::string name, glm::mat2 value) const
+{
+    glUniformMatrix2fv(__getLocation(name), 1, false, glm::value_ptr(value));
+}
+
+void Shader::setUniformMatrix3fv(std::string name, glm::mat3 value) const
+{
+    glUniformMatrix3fv(__getLocation(name), 1, false, glm::value_ptr(value));
+}
+
+void Shader::setUniformMatrix4fv(std::string name, glm::mat4 value) const
+{
+    glUniformMatrix4fv(__getLocation(name), 1, false, glm::value_ptr(value));
 }
 
 Shader::~Shader()
