@@ -1,16 +1,17 @@
-#ifndef POINT
-#define POINT
+#ifndef POINTS
+#define POINTS
 
 #include "RenderObject.h"
 #include <glm/glm.hpp>
+#include <memory>
 
-#define POINT_VERTEX_SHADER "#version 330 core\n"                                \
-                            "layout (location = 0) in vec3 aPos;\n"              \
-                             "uniform mat4 mView;\n"                          \
-                            "void main()\n"                                      \
-                            "{\n"                                                \
-                            "gl_Position = mView*vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" \
-                            "gl_PointSize = 12f;\n"                             \
+#define POINT_VERTEX_SHADER "#version 330 core\n"                    \
+                            "layout (location = 0) in vec3 aPos;\n"  \
+                            "uniform mat4 mView;\n"                  \
+                            "void main()\n"                          \
+                            "{\n"                                    \
+                            "gl_Position = mView*vec4(aPos, 1.0);\n" \
+                            "gl_PointSize = 20.0f;\n"                \
                             "}\n"
 
 #define POINT_FRAGMENT_SHADER "#version 330 core\n"    \
@@ -21,17 +22,19 @@
                               "FragColor = mColor;\n"  \
                               "}\n"
 
-class Point : public RenderObject
+template <unsigned int N>
+class Points : public RenderObject
 {
 private:
     /* data */
 public:
-    Point()
+    Points()
     {
         mShader.loadShaderFromString(POINT_VERTEX_SHADER, POINT_FRAGMENT_SHADER);
 
         // Vertex data for a triangle (positions and colors)
-        float vertices[] = {0.0, 0.0, 0.0};
+        glm::vec3 vertices[N];
+        memset(vertices, 0, N * sizeof(glm::vec3));
 
         // Generate and bind Vertex Array Object (VAO) and Vertex Buffer Object (VBO)
         glGenVertexArrays(1, &mVAO);
@@ -49,12 +52,29 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+        glEnable(GL_PROGRAM_POINT_SIZE);
         mShader.setUniform4f("mColor", glm::vec4(0.0, 1.0, 1.0, 1.0));
 
-        mCount = 1;
+        mCount = 2;
     }
 
-    ~Point()
+    glm::vec3 *getPointer()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        return (glm::vec3 *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    }
+
+    void unmap()
+    {
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
+
+    unsigned int size() const
+    {
+        return N;
+    }
+
+    ~Points()
     {
         glDeleteVertexArrays(1, &mVAO);
         glDeleteBuffers(1, &mVBO);
