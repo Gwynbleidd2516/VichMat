@@ -16,7 +16,9 @@ protected:
     unsigned int mCount;
 
 public:
-    virtual void render() const;
+    virtual void render(glm::mat4 view) const;
+
+    // void setView(glm::mat4 view) const;
 };
 
 #endif

@@ -2,15 +2,17 @@
 #define CIRCLE
 
 #include "RenderObject.h"
+#include <glm/glm.hpp>
 
-#define CIRCLE_VERTEX_SHADER "#version 330 core\n"                                     \
-                             "layout (location = 0) in vec3 aPos;\n"                   \
-                             "out vec3 aGeom;\n"                                       \
-                             "uniform vec2 mPosition;\n"                               \
-                             "void main()\n"                                           \
-                             "{\n"                                                     \
-                             "gl_Position = vec4(aPos.xy + mPosition, aPos.z, 1.0);\n" \
-                             "aGeom = aPos;\n"                                         \
+#define CIRCLE_VERTEX_SHADER "#version 330 core\n"                            \
+                             "layout (location = 0) in vec3 aPos;\n"          \
+                             "out vec3 aGeom;\n"                              \
+                             "uniform float mRadius;\n"                       \
+                             "uniform mat4 mView;\n"                          \
+                             "void main()\n"                                  \
+                             "{\n"                                            \
+                             "gl_Position = mView*vec4(aPos*mRadius, 1.0);\n" \
+                             "aGeom = aPos;\n"                                \
                              "}\n"
 
 #define CIRCLE_FRAGMENT_SHADER "#version 330 core\n"                             \
@@ -27,9 +29,14 @@
 
 class Circle : public RenderObject
 {
+private:
+    float mRadius;
+    glm::vec2 mPos;
+
 public:
     Circle()
     {
+        mRadius = 0.5;
         mShader.loadShaderFromString(CIRCLE_VERTEX_SHADER, CIRCLE_FRAGMENT_SHADER);
 
         // Vertex data for a triangle (positions and colors)
@@ -67,12 +74,15 @@ public:
         glBindVertexArray(0);
 
         mShader.setUniform4f("mColor", glm::vec4(0.0, 1.0, 1.0, 1.0));
+        mShader.setUniform1f("mRadius", mRadius);
 
         mCount = 6;
     }
 
-    void render() const override
+    void render(glm::mat4 view) const override
     {
+        view = glm::translate(view, glm::vec3(mPos, 0.0f));
+        mShader.setUniformMatrix4fv("mView", view);
         mShader.useShader();
         glBindVertexArray(mVAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -82,7 +92,7 @@ public:
 
     void setPosition(glm::vec2 pos)
     {
-        mShader.setUniform2f("mPosition", pos);
+        mPos = pos;
     }
 
     ~Circle()

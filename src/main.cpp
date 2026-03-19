@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 
 #include "EmptyScene.h"
+#include "TestScene.h"
+#include "CircleBoundingScene.h"
+#include "CubeScene.h"
 
 void setScene(IScene &scene)
 {
@@ -23,7 +26,7 @@ void setScene(IScene &scene)
         if (scenePtr) scenePtr->keyboard(key, x, y); });
 
     glutTimerFunc(16, [](int val)
-                    {
+                  {
         IScene* scenePtr = static_cast<IScene*>(glutGetWindowData());
         if (scenePtr) scenePtr->timer(val); }, 0);
 }
@@ -35,6 +38,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitContextProfile(GLUT_CORE_PROFILE); // optional
     glutInitWindowSize(800, 600);
+    glLoadIdentity();
 
     GLint window = glutCreateWindow("FreeGLUT Shader Example");
     glutInitContextProfile(window);
@@ -54,7 +58,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    EmptyScene scene;
+    CircleBoundingScene scene;
 
     setScene(scene);
 
