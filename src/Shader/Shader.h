@@ -6,6 +6,7 @@
 #include <GL/freeglut.h>
 #include <string_view>
 #include <glm/glm.hpp>
+#include<glm/gtc/type_ptr.hpp>
 
 class Shader
 {
@@ -72,6 +73,14 @@ public:
     void setUniform3f(std::string name, glm::vec3 value) const;
 
     void setUniform4f(std::string name, glm::vec4 value) const;
+    // ------------------------------------------------------------- //
+    // void setUniform1f(std::string name, float value) const;
+
+    void setUniformMatrix2fv(std::string name, glm::mat2 value) const;
+
+    void setUniformMatrix3fv(std::string name, glm::mat3 value) const;
+
+    void setUniformMatrix4fv(std::string name, glm::mat4 value) const;
 
     ~Shader();
 };
