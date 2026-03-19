@@ -1,11 +1,17 @@
 #include"RenderObject.h"
 
-void RenderObject::render() const
+void RenderObject::render(glm::mat4 view) const
 {
+    mShader.setUniformMatrix4fv("mView", view);
+
     mShader.useShader();
-    // glUseProgram(mShaderProgram);
     glBindVertexArray(mVAO);
-    glDrawArrays(GL_TRIANGLES, 0, mCount); // Draw the 3 vertices of the triangle
+    glDrawArrays(GL_POINTS, 0, mCount); // Draw the 3 vertices of the triangle
     glBindVertexArray(0);
     glUseProgram(0);
 }
+
+// void RenderObject::setView(glm::mat4 view) const
+// {
+//     mShader.setUniformMatrix4fv("mView", view);
+// }

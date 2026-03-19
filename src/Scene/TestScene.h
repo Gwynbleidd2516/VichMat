@@ -1,13 +1,21 @@
-#ifndef EMPTY_SCENE
-#define EMPTY_SCENE
+#ifndef TEST_SCENE
+#define TEST_SCENE
 
 #include "IScene.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "TestObject.h"
 
-class EmptyScene : public IScene
+#include<glm/glm.hpp>
+
+class TestScene : public IScene
 {
+private:
+    TestObject test;
+
 public:
+    // TestScene(/* args */);
+
     void reshape(int w, int h) override
     {
         glViewport(0, 0, w, h);
@@ -20,6 +28,7 @@ public:
     void display() override
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        test.render(glm::mat4(1.0f));
         glutSwapBuffers(); // Swap the front and back buffers
     }
 
@@ -27,6 +36,8 @@ public:
     {
 
     }
+
+    // ~TestScene();
 };
 
 #endif
