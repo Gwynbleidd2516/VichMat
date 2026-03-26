@@ -4,17 +4,23 @@ set(APP_NAME VichMat)
 
 project(main)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 include(FetchContent)
-
-# set(ONLY_LIBS ON) # Only build libraries, not examples/utilities
-
-# target_compile_definitions(main PRIVATE DFREEGLUT_STATIC)
 
 FetchContent_Declare(freeglut
     GIT_REPOSITORY https://github.com/freeglut/freeglut.git
     GIT_TAG master)
 
 FetchContent_MakeAvailable(freeglut)
+
+
+FetchContent_Declare(GLEW
+GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
+GIT_TAG master)
+
+FetchContent_MakeAvailable(GLEW)
 
 FetchContent_Declare(glm
     GIT_REPOSITORY https://github.com/g-truc/glm.git
@@ -23,12 +29,26 @@ FetchContent_Declare(glm
 
 FetchContent_MakeAvailable(glm)
 
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG v1.92.6
+)
+FetchContent_MakeAvailable(imgui)
 
-FetchContent_Declare(GLEW
-    GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
-    GIT_TAG master)
+FetchContent_Declare(implot3d
+    GIT_REPOSITORY https://github.com/brenocq/implot3d.git
+    GIT_TAG v0.3
+)
 
-FetchContent_MakeAvailable(GLEW)
+FetchContent_MakeAvailable(implot3d)
+
+FetchContent_Declare(implot
+    GIT_REPOSITORY https://github.com/epezent/implot.git
+    GIT_TAG v0.17
+)
+
+FetchContent_MakeAvailable(implot)
 
 MACRO(HEADER_DIRECTORIES return_list search_path)
     # Find all header files recursively
@@ -67,8 +87,27 @@ target_include_directories(main PUBLIC ${MY_INCLUDES})
 target_link_libraries(main PRIVATE freeglut)
 target_link_libraries(main PRIVATE libglew_static)
 target_link_libraries(main PRIVATE glm)
+# target_link_libraries(main PRIVATE implot)
+# target_link_libraries(main PRIVATE implot3d)
 
-message(---CMAKE_BUILD_TYPE)
+target_include_directories(main PUBLIC ${implot_SOURCE_DIR})
+target_include_directories(main PUBLIC ${implot3d_SOURCE_DIR})
+
+file(GLOB IMGUI_SOURCES 
+    "${imgui_SOURCE_DIR}/*.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_glut.cpp"   # Example Backend
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp" # Example Backend
+    "${implot_SOURCE_DIR}/*.cpp"
+    "${implot3d_SOURCE_DIR}/*.cpp"
+)
+
+add_library(graphs STATIC ${IMGUI_SOURCES})
+target_include_directories(graphs PUBLIC ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
+
+target_link_libraries(main PRIVATE graphs)
+target_include_directories(main PUBLIC ${imgui_SOURCE_DIR})
+
+message(---${implot_SOURCE_DIR})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${APP_NAME})
