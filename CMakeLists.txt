@@ -29,10 +29,11 @@ FetchContent_Declare(glm
 
 FetchContent_MakeAvailable(glm)
 
+# Обновленная версия imgui
 FetchContent_Declare(
     imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.92.6
+    GIT_TAG v1.91.0  # Обновлено до более новой версии
 )
 FetchContent_MakeAvailable(imgui)
 
@@ -95,8 +96,8 @@ target_include_directories(main PUBLIC ${implot3d_SOURCE_DIR})
 
 file(GLOB IMGUI_SOURCES 
     "${imgui_SOURCE_DIR}/*.cpp"
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_glut.cpp"   # Example Backend
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp" # Example Backend
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_glut.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
     "${implot_SOURCE_DIR}/*.cpp"
     "${implot3d_SOURCE_DIR}/*.cpp"
 )
@@ -109,9 +110,17 @@ target_include_directories(main PUBLIC ${imgui_SOURCE_DIR})
 
 message(---${implot_SOURCE_DIR})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>)
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${APP_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX .exe)
+# Настройка выходных директорий
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>
+    OUTPUT_NAME ${APP_NAME}
+)
+
+# Добавляем .exe только на Windows
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX .exe)
+endif()
+
 set_target_properties(freeglut
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
