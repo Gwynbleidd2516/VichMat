@@ -132,6 +132,43 @@ void mainLoop()
             }
         }
 
+        ImGui::Spacing();
+
+        // --- Кнопка "Сравнение методов" ---
+        // Запускает 4 метода параллельно, сохраняет RMSD в CSV
+        ImGui::SetCursorPosX((windowWidth - buttonWidth) * 0.5f);
+        if (ImGui::Button("Compare methods", ImVec2(buttonWidth, 40.0f)))
+        {
+            // Определяем число тел и начальные условия
+            int n_bodies = 3;
+            double t_end = 30.0;
+            std::string comparison_file = "method_comparison.csv";
+
+            switch (figure)
+            {
+            case 0: n_bodies = 3; t_end = 6.3259 * 5;  break; // восьмёрка
+            case 1: n_bodies = N; t_end = 30.0;         break; // многоугольник
+            case 2: n_bodies = 4; t_end = 28.67 * 2;    break; // супер-восьмёрка
+            case 3: n_bodies = 3; t_end = 40.0;         break; // бабочка
+            case 4: n_bodies = 3; t_end = 40.0;         break; // мотылёк
+            }
+
+            SystemState init_state(n_bodies);
+            switch (figure)
+            {
+            case 0: init_figure_eight(init_state); break;
+            case 1: init_polygon(init_state);      break;
+            case 2: init_super_eight(init_state);  break;
+            case 3: init_butterfly(init_state);     break;
+            case 4: init_moth(init_state);          break;
+            }
+
+            std::cout << "Running method comparison..." << std::endl;
+            method_comparison_experiment(init_state, 0.001, t_end, 100,
+                                         comparison_file);
+        }
+        ImGui::TextDisabled("  Saves RMSD between Euler/Leapfrog/RK4/DP8 to CSV");
+
         ImGui::End();
         ImGui::Render();
 
