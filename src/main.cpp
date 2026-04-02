@@ -156,6 +156,9 @@ void mainLoop()
 void reshape(int w, int h)
 {
     glViewport(0, 0, w, h);
+
+    if (ImGui::GetCurrentContext())
+        ImGui::GetIO().DisplaySize = ImVec2((float)w, (float)h);
 }
 
 int main(int argc, char **argv)

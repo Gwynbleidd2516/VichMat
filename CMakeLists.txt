@@ -7,6 +7,9 @@ project(main)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Подключаем OpenGL
+find_package(OpenGL REQUIRED)
+
 include(FetchContent)
 
 FetchContent_Declare(freeglut
@@ -87,6 +90,7 @@ target_include_directories(main PUBLIC ${MY_INCLUDES})
 target_link_libraries(main PRIVATE freeglut)
 target_link_libraries(main PRIVATE libglew_static)
 target_link_libraries(main PRIVATE glm)
+target_link_libraries(main PRIVATE ${OPENGL_LIBRARIES})
 # target_link_libraries(main PRIVATE implot)
 # target_link_libraries(main PRIVATE implot3d)
 
@@ -95,8 +99,8 @@ target_include_directories(main PUBLIC ${implot3d_SOURCE_DIR})
 
 file(GLOB IMGUI_SOURCES 
     "${imgui_SOURCE_DIR}/*.cpp"
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_glut.cpp"   # Example Backend
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp" # Example Backend
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_glut.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
     "${implot_SOURCE_DIR}/*.cpp"
     "${implot3d_SOURCE_DIR}/*.cpp"
 )
@@ -104,14 +108,19 @@ file(GLOB IMGUI_SOURCES
 add_library(graphs STATIC ${IMGUI_SOURCES})
 target_include_directories(graphs PUBLIC ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
 
+# КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: линкуем graphs с freeglut и OpenGL
+target_link_libraries(graphs PRIVATE freeglut ${OPENGL_LIBRARIES})
+
 target_link_libraries(main PRIVATE graphs)
 target_include_directories(main PUBLIC ${imgui_SOURCE_DIR})
 
 message(---${implot_SOURCE_DIR})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>)
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${APP_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX .exe)
+# Исправлено: ${PROJECT_NAME} -> main
+set_target_properties(main PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>)
+set_target_properties(main PROPERTIES OUTPUT_NAME ${APP_NAME})
+set_target_properties(main PROPERTIES SUFFIX .exe)
+
 set_target_properties(freeglut
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
