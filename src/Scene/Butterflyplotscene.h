@@ -12,12 +12,12 @@ public:
     ButterflyPlotScene()
     {
         this->mName = "Butterfly I (Simo, 3 bodies)";
-        this->params.h            = 0.001;
-        this->params.T_end        = 60.0;   // примерный период неизвестен точно — берём запас
+        this->params.h = 0.01;
+        this->params.T_end = 60.0; // примерный период неизвестен точно — берём запас
         this->params.output_every = 10;
-        this->params.realtime     = true;
-        this->params.tol_rel      = 1e-11;
-        this->params.tol_abs      = 1e-13;
+        this->params.realtime = true;
+        this->params.tol_rel = 1e-11;
+        this->params.tol_abs = 1e-13;
     }
 
     void setState(int /*n*/, Method meth) { PlotScene::setState(3, meth); }
@@ -32,15 +32,16 @@ public:
     MothPlotScene()
     {
         this->mName = "Moth I (Simo, 3 bodies)";
-        this->params.h            = 0.001;
-        this->params.T_end        = 60.0;
+        this->params.h = 0.001;
+        this->params.T_end = 60.0;
         this->params.output_every = 10;
-        this->params.realtime     = true;
-        this->params.tol_rel      = 1e-11;
-        this->params.tol_abs      = 1e-13;
+        this->params.realtime = true;
+        this->params.tol_rel = 1e-11;
+        this->params.tol_abs = 1e-13;
     }
 
-    void setState(int /*n*/, Method meth) { PlotScene::setState(3, meth); }
+    void setState(int /*n*/, Method meth) override
+    { PlotScene::setState(3, meth); }
     void init() override { init_moth(*state); }
 };
 

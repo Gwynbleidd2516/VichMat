@@ -32,7 +32,7 @@ public:
 
     // Создаём систему из n тел, устанавливаем метод, вызываем init() дочернего класса.
     // Метод Method::DP8_ADAPTIVE автоматически подбирает шаг — h лишь стартовое значение.
-    void setState(int n, Method meth)
+    virtual void setState(int n, Method meth)
     {
         if (state) delete state;
         state = new SystemState(n);
@@ -123,9 +123,9 @@ public:
                 std::stringstream ss;
                 ss << "Body " << i + 1;
                 ImPlot3D::PlotScatter(ss.str().c_str(),
-                                      &state->bodies[i].x,
-                                      &state->bodies[i].y,
-                                      &state->bodies[i].z, 1);
+                                      &(state->bodies[i]).x,
+                                      &(state->bodies[i]).y,
+                                      &(state->bodies[i]).z, 1);
             }
 
             ImPlot3D::EndPlot();

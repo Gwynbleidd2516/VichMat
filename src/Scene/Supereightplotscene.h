@@ -15,7 +15,7 @@ public:
     SuperEightPlotScene()
     {
         this->mName = "Super-eight (Gerver, 4 bodies)";
-        this->params.h            = 0.001;
+        this->params.h            = 0.01;
         this->params.T_end        = 28.67 * 3;  // три периода
         this->params.output_every = 10;
         this->params.realtime     = true;
@@ -25,7 +25,7 @@ public:
 
     // setState для супер-восьмёрки всегда использует 4 тела,
     // независимо от того, что передал пользователь
-    void setState(int /*n*/, Method meth)
+    void setState(int /*n*/, Method meth) override
     {
         PlotScene::setState(4, meth);
     }

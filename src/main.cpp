@@ -9,8 +9,8 @@
 
 #include "Scene/PolygonPlotScene.h"
 #include "Scene/FigureEightPlotScene.h"
-#include "Scene/SuperEightPlotScene.h"    // новая сцена: супер-восьмёрка Жервера
-#include "Scene/ButterflyPlotScene.h"     // новые сцены: бабочка и мотылёк
+#include "Scene/SuperEightPlotScene.h" // новая сцена: супер-восьмёрка Жервера
+#include "Scene/ButterflyPlotScene.h"  // новые сцены: бабочка и мотылёк
 
 #include "Mmath.h"
 
@@ -39,19 +39,20 @@ void mainLoop()
         ImGui::SetNextWindowSize(viewport->Size);
         ImGui::Begin("Welcome", nullptr, window_flags);
 
-        static int figure = 0;  // 0=восьмёрка, 1=многоугольник, 2=супер-восьмёрка, 3=бабочка, 4=мотылёк
-        static int N      = 5;  // кол-во тел (актуально только для многоугольника)
-        static int method = 0;  // 0=Euler, 1=Leapfrog, 2=RK4, 3=DP8, 4=DP8_Adaptive
+        static int figure = 0; // 0=восьмёрка, 1=многоугольник, 2=супер-восьмёрка, 3=бабочка, 4=мотылёк
+        static int N = 3;      // кол-во тел (актуально только для многоугольника)
+        static int method = 0; // 0=Euler, 1=Leapfrog, 2=RK4, 3=DP8, 4=DP8_Adaptive
 
         // Центрируем заголовок и авторов через SetCursorPosX
         float windowWidth = ImGui::GetWindowWidth();
-        const char* title = "Laboratory work on computational mathematics No. 1";
+        const char *title = "Laboratory work on computational mathematics No. 1";
         ImGui::SetCursorPosX((windowWidth - ImGui::CalcTextSize(title).x) * 0.5f);
         ImGui::Text("%s", title);
 
-        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
 
-        const char* authors = "Authors: Vyaznikov N.K, Rositsky V.";
+        const char *authors = "Authors: Vyaznikov N.K, Rositsky V.";
         ImGui::SetCursorPosX((windowWidth - ImGui::CalcTextSize(authors).x) * 0.5f);
         ImGui::Text("%s", authors);
 
@@ -61,11 +62,11 @@ void mainLoop()
 
         // Выбор хореографии
         const char *figure_items[] = {
-            "Figure Eight (3 bodies)",       // восьмёрка — устойчивая
-            "Polygon (N bodies)",             // правильный N-угольник — тривиальная
-            "Super-Eight / Gerver (4 bodies)",// нетривиальная, 4 тела
-            "Butterfly I (3 bodies)",         // из каталога Simo 2002
-            "Moth I (3 bodies)"               // из каталога Simo 2002
+            "Figure Eight (3 bodies)",         // восьмёрка — устойчивая
+            "Polygon (N bodies)",              // правильный N-угольник — тривиальная
+            "Super-Eight / Gerver (4 bodies)", // нетривиальная, 4 тела
+            "Butterfly I (3 bodies)",          // из каталога Simo 2002
+            "Moth I (3 bodies)"                // из каталога Simo 2002
         };
         ImGui::Combo("Select figure", &figure, figure_items, IM_ARRAYSIZE(figure_items));
 
@@ -73,19 +74,21 @@ void mainLoop()
         if (figure == 1)
         {
             ImGui::InputInt("Number of bodies", &N);
-            if (N < 3)  N = 3;
-            if (N > 20) N = 20;
+            if (N < 3)
+                N = 3;
+            if (N > 20)
+                N = 20;
         }
 
         ImGui::Spacing();
 
         // Выбор численного метода
         const char *method_items[] = {
-            "Euler (order 1)",             // самый простой, разваливается быстро
+            "Euler (order 1)",                // самый простой, разваливается быстро
             "Leapfrog (order 2, symplectic)", // хорош для длинных симуляций
-            "RK4 (order 4)",               // стандарт, хорошая точность
-            "DP8 (order 8, fixed step)",   // очень точный при фиксированном шаге
-            "DP8 Adaptive (order 8)"       // самый точный, шаг подбирается автоматически
+            "RK4 (order 4)",                  // стандарт, хорошая точность
+            "DP8 (order 8, fixed step)",      // очень точный при фиксированном шаге
+            "DP8 Adaptive (order 8)"          // самый точный, шаг подбирается автоматически
         };
         ImGui::Combo("Select method", &method, method_items, IM_ARRAYSIZE(method_items));
 
@@ -95,7 +98,8 @@ void mainLoop()
             ImGui::TextDisabled("  Adaptive step: tolerances 1e-10 (rel) / 1e-12 (abs)");
         }
 
-        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
 
         // Кнопка Start (центрированная)
         float buttonWidth = 120.0f;
@@ -105,12 +109,23 @@ void mainLoop()
             // Создаём нужную сцену
             switch (figure)
             {
-            case 0: scene = new FigureEightPlotScene(); break;
-            case 1: scene = new PolygonPlotScene();     break;
-            case 2: scene = new SuperEightPlotScene();  break;
-            case 3: scene = new ButterflyPlotScene();   break;
-            case 4: scene = new MothPlotScene();        break;
-            default: break;
+            case 0:
+                scene = new FigureEightPlotScene();
+                break;
+            case 1:
+                scene = new PolygonPlotScene();
+                break;
+            case 2:
+                scene = new SuperEightPlotScene();
+                break;
+            case 3:
+                scene = new ButterflyPlotScene();
+                break;
+            case 4:
+                scene = new MothPlotScene();
+                break;
+            default:
+                break;
             }
 
             if (scene)
@@ -119,12 +134,24 @@ void mainLoop()
                 Method meth;
                 switch (method)
                 {
-                case 0: meth = Method::EULER;        break;
-                case 1: meth = Method::LEAPFROG;     break;
-                case 2: meth = Method::RK4;          break;
-                case 3: meth = Method::DP8;          break;
-                case 4: meth = Method::DP8_ADAPTIVE; break;
-                default: meth = Method::RK4;         break;
+                case 0:
+                    meth = Method::EULER;
+                    break;
+                case 1:
+                    meth = Method::LEAPFROG;
+                    break;
+                case 2:
+                    meth = Method::RK4;
+                    break;
+                case 3:
+                    meth = Method::DP8;
+                    break;
+                case 4:
+                    meth = Method::DP8_ADAPTIVE;
+                    break;
+                default:
+                    meth = Method::RK4;
+                    break;
                 }
                 scene->setState(N, meth);
                 std::cout << "Scene created: figure=" << figure
@@ -153,11 +180,6 @@ void mainLoop()
     }
 }
 
-void reshape(int w, int h)
-{
-    glViewport(0, 0, w, h);
-}
-
 int main(int argc, char **argv)
 {
     std::cout << "Program started" << std::endl;
@@ -166,7 +188,7 @@ int main(int argc, char **argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
-    glutInitContextVersion(3, 3);   // требуем OpenGL 3.3 core
+    glutInitContextVersion(3, 3); // требуем OpenGL 3.3 core
     glutInitWindowSize(1280, 720);
 
     GLint window = glutCreateWindow("VichMat lb1");
@@ -197,16 +219,25 @@ int main(int argc, char **argv)
     // Бэкенды: GLUT — обработка ввода, OpenGL3 — рендеринг
     ImGui_ImplGLUT_Init();
     ImGui_ImplOpenGL3_Init("#version 330");
-    ImGui_ImplGLUT_InstallFuncs();  // регистрирует колбеки клавиш, мыши и т.д.
+    // ImGui_ImplGLUT_InstallFuncs();  // регистрирует колбеки клавиш, мыши и т.д.
 
+    glutReshapeFunc(ImGui_ImplGLUT_ReshapeFunc);
+    glutMotionFunc(ImGui_ImplGLUT_MotionFunc);
+    glutPassiveMotionFunc(ImGui_ImplGLUT_MotionFunc);
+    glutMouseFunc(ImGui_ImplGLUT_MouseFunc);
+#ifdef __FREEGLUT_EXT_H__
+    glutMouseWheelFunc(ImGui_ImplGLUT_MouseWheelFunc);
+#endif
+    glutKeyboardFunc(ImGui_ImplGLUT_KeyboardFunc);
+    glutKeyboardUpFunc(ImGui_ImplGLUT_KeyboardUpFunc);
+    glutSpecialFunc(ImGui_ImplGLUT_SpecialFunc);
+    glutSpecialUpFunc(ImGui_ImplGLUT_SpecialUpFunc);
     // glutDisplayFunc — при перерисовке
     // glutIdleFunc — постоянно в простое → непрерывная анимация
     glutDisplayFunc(mainLoop);
-    glutReshapeFunc(reshape);
     glutIdleFunc(mainLoop);
 
-    std::cout << "Entering main loop..." << std::endl;
-    glutMainLoop();  // не возвращается
+    glutMainLoop();
 
     // Недостижимо, но для порядка:
     delete scene;
